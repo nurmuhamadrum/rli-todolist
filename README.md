@@ -11,7 +11,7 @@ This is a Test from PT. Rajawali Lestari Inovasi, where I built a mobile applica
 ## Screenshots
 
 <img src="docs/screenshots/screenshots1.PNG" />
-<img src="docs/screenshots/screenshots2.PNG" />
+<img src="docs/screenshots/screenshot2.PNG" />
 
 ## Built With
 
