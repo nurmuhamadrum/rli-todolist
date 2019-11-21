@@ -29,6 +29,9 @@ export default class Profile extends Component {
             style={style.iconLogo}
           />
           <Text style={style.profileText}>MY PROFILE</Text>
+          <Text style={style.profileSubText}>
+            Don't forget to do what you have planned!
+          </Text>
           <TouchableOpacity
             style={style.button}
             onPress={() => BackHandler.exitApp()}>
@@ -63,5 +66,10 @@ const style = StyleSheet.create({
     fontSize: 20,
     color: 'white',
     fontFamily: Fonts.PoppinsBold,
+  },
+  profileSubText: {
+    fontSize: 17,
+    color: 'white',
+    fontFamily: Fonts.Poppins,
   },
 });

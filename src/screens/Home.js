@@ -16,7 +16,12 @@ import {textEllipsis} from '../configs/utils';
 
 import {connect} from 'react-redux';
 import fetchTodo from './../_store/todo';
-import {METHOD_GET, METHOD_POST, METHOD_PUT} from './../configs/constant';
+import {
+  METHOD_GET,
+  METHOD_POST,
+  METHOD_PUT,
+  METHOD_DELETE,
+} from './../configs/constant';
 
 class Home extends Component {
   constructor(props) {
@@ -26,8 +31,8 @@ class Home extends Component {
       index: null,
       title: '',
       isModalVisible: false,
+      isEdit: false,
       selected: false,
-      isModalVisibleDelete: false,
     };
   }
 
@@ -71,6 +76,17 @@ class Home extends Component {
     this.toggleModal();
   };
 
+  handleDelete = () => {
+    this.props.fetchTodo(
+      METHOD_DELETE,
+      null,
+      null,
+      this.state.id,
+      this.state.index,
+    );
+    this.toggleModal();
+  };
+
   toggleModal = () => {
     this.setState({isModalVisible: !this.state.isModalVisible});
   };
@@ -81,17 +97,13 @@ class Home extends Component {
     });
   };
 
-  getTodoData = (todo, index) => {
+  getTodoData = (todo, index, isEdit) => {
     this.setState(
-      {selected: todo.completed, id: todo.id, title: todo.title, index},
+      {selected: todo.completed, id: todo.id, title: todo.title, index, isEdit},
       () => {
         this.toggleModal();
       },
     );
-  };
-
-  toggleModalDelete = () => {
-    this.setState({isModalVisibleDelete: !this.state.isModalVisibleDelete});
   };
 
   render() {
@@ -106,7 +118,7 @@ class Home extends Component {
     if (todo.isLoading)
       return (
         <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color="#207561" />
         </View>
       );
 
@@ -136,6 +148,8 @@ class Home extends Component {
             <FlatList
               data={newData}
               keyExtractor={item => item.id.toString()}
+              onRefresh={() => this.handleGetTodos()}
+              refreshing={false}
               renderItem={({item, index}) => {
                 let completedIcon;
                 if (item.completed) {
@@ -157,7 +171,7 @@ class Home extends Component {
                     </View>
                     <View style={{flex: 1, flexDirection: 'row'}}>
                       <TouchableOpacity
-                        onPress={() => this.getTodoData(item, index)}
+                        onPress={() => this.getTodoData(item, index, true)}
                         style={{
                           paddingTop: 2,
                           marginLeft: 5,
@@ -166,7 +180,7 @@ class Home extends Component {
                         <Icon name="edit" size={25} color={'#000000'} />
                       </TouchableOpacity>
                       <TouchableOpacity
-                        onPress={() => this.toggleModalDelete()}>
+                        onPress={() => this.getTodoData(item, index, false)}>
                         <Icon name="trash" size={25} color={'#ff0000'} />
                       </TouchableOpacity>
                     </View>
@@ -177,7 +191,8 @@ class Home extends Component {
           </View>
 
           <View>
-            <Modal isVisible={this.state.isModalVisible}>
+            <Modal
+              isVisible={this.state.isEdit ? this.state.isModalVisible : false}>
               <View style={style.Modal}>
                 <View style={{alignItems: 'center'}}>
                   <Text style={style.modalText}>EDIT TODO</Text>
@@ -229,7 +244,8 @@ class Home extends Component {
           </View>
 
           <View>
-            <Modal isVisible={this.state.isModalVisibleDelete}>
+            <Modal
+              isVisible={this.state.isEdit ? false : this.state.isModalVisible}>
               <View style={style.Modal}>
                 <View style={{alignItems: 'center'}}>
                   <Text style={style.modalText}>DELETE THIS TODO?</Text>
@@ -244,10 +260,12 @@ class Home extends Component {
                   <TouchableOpacity
                     style={style.modalCancel}
                     title="Hide modal"
-                    onPress={() => this.toggleModalDelete()}>
+                    onPress={() => this.toggleModal()}>
                     <Text style={{color: 'white', fontSize: 18}}>No</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity style={style.modalSave}>
+                  <TouchableOpacity
+                    onPress={() => this.handleDelete()}
+                    style={style.modalSave}>
                     <Text style={{color: 'white', fontSize: 18}}>Yes</Text>
                   </TouchableOpacity>
                 </View>

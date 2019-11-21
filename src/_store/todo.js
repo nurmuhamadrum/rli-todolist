@@ -59,7 +59,7 @@ const todo = (method, data, len, id, index) => {
     case METHOD_DELETE:
       return dispatch => {
         dispatch(fetchData(method, true));
-        API.put(`/todos/${id}`, data)
+        API.delete(`/todos/${id}`)
           .then(res => {
             dispatch(fetchDataFulfilled(method, res.data, index));
           })

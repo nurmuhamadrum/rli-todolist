@@ -46,7 +46,14 @@ const todo = (state = initialState, action) => {
           ...state,
           isLoading: action.isLoading,
         };
+      } else if (action.type == DELETE_TODOS_FULFILLED) {
+        state.data.splice(action.index, 1);
+        return {
+          ...state,
+          isLoading: action.isLoading,
+        };
       }
+
       return {
         ...state,
         data: action.payload,
